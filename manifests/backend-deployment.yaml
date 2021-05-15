@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-dep
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: katilp/ex2-08-back:v1.0.0
+          env:
+            - name: POSTGRES_PASSWORD # ENV name passed to container
+              valueFrom:
+                secretKeyRef:
+                  name: db-password
+                  key: POSTGRES_PASSWORD # ENV name in the secret
+            - name: PGUSER
+              valueFrom:
+                configMapKeyRef:
+                  name: back-config # this is ConfigMap Name
+                  key: PGUSER # this is key in ConfigMap
+            - name: PGDATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: back-config
+                  key: PGDATABASE
+            - name: DATABASE_URL
+              value: "postgres://$(PGUSER):$(POSTGRES_PASSWORD)@postgres-svc.project.svc:5432/$(PGDATABASE)"
+          ports:
+            - name: http
+              containerPort: 80

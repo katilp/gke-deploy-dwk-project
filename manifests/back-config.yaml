@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  PGDATABASE: tododb
+  PGUSER: postgres
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: back-config
+  namespace: project
