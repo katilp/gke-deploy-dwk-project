@@ -61,4 +61,4 @@ jobs:
         kubectl create namespace project --dry-run=client -o yaml | kubectl apply -f -
         ./kustomize edit set image PROJECT/IMAGE=$IMAGE_WITH_TAG
         kubectl apply -k .
-        kubectl rollout status deployment/$IMAGE -n project
+        kubectl rollout status statefulset/postgres-ss -n project
