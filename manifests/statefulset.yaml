@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: dwk-db
-          image: PROJECT/IMAGE
+          image: DBPROJECT/IMAGE
           envFrom:
           - secretRef:
               name: db-password

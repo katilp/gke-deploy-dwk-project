@@ -1,0 +1,31 @@
+extends layout
+
+
+block header 
+  #header 
+    h1= title
+    p Welcome to #{title}
+
+block content 
+  #content 
+
+    block row
+      .row
+        block column 
+          .column  
+            h3 Add a to-do item
+            block myform 
+              form(name="todo", method="post")
+                div.input
+                    span.label To-do item:
+                    input(type="text", name="todoitem", maxlength="140")
+                div.actions
+                    input(type="submit", value="Add to-do") 
+            p Added: #{todo}             
+            ul
+              each val in todolist
+                li= val 
+          .column
+            img(src="/image.jpg" width="80%")
+
+  

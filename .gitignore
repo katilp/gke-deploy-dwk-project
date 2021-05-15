@@ -1,2 +1,4 @@
 kustomize
 POSTGRES_PASSWORD
+frontend/.vscode
+backend/.vscode

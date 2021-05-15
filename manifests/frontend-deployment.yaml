@@ -18,8 +18,8 @@ spec:
           persistentVolumeClaim:
             claimName: file-claim
       containers:
-        - name: frontend
-          image: katilp/ex2-08-front:v1.0.1
+        - name: dwk-frontend
+          image: FRONTPROJECT/IMAGE      
           volumeMounts:
           - name: shared-files
             mountPath: /usr/src/app/shared
