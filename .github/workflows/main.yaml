@@ -33,7 +33,6 @@ jobs:
     - name: Deploy
       run: |-
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
-        echo $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
+        echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
         kubectl create namespace project
         kubectl apply -k .
-        kubectl rollout status deployments   
