@@ -50,9 +50,13 @@ jobs:
         cd ..
         curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
         chmod u+x ./kustomize
+        pwd
+        ls -l
 
     - name: Deploy
       run: |-
+        pwd
+        ls -l
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
         kubectl create namespace project --dry-run=client -o yaml | kubectl apply -f -
