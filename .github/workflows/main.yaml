@@ -34,5 +34,5 @@ jobs:
       run: |-
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
-        kubectl create namespace project
+        kubectl create namespace project --dry-run=client -o yaml | kubectl apply -f -
         kubectl apply -k .
