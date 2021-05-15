@@ -15,5 +15,7 @@ secretGenerator:
   namespace: project
   type: Opaque
 images:
-- name: PROJECT/IMAGE
-  newName: fake/imagename
+- name: BACKPROJECT/IMAGE
+  newName: fake/backimagename
+- name: DBPROJECT/IMAGE
+  newName: fake/dbimagename

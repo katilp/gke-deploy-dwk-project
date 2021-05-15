@@ -6,7 +6,8 @@ on:
 env:
   GKE_CLUSTER: dwk-cluster
   GKE_ZONE: europe-west6-a
-  IMAGE: dwk-db
+  DB_IMAGE: dwk-db
+  BACK_IMAGE: dwk-backend
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true  
    
 jobs:
@@ -18,8 +19,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Create db image name and tag
-      run: echo "::set-env name=IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
+    - name: Create image names and tags
+      run: |-
+        echo "::set-env name=DB_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$DB_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
+        echo "::set-env name=BACK_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$BACK_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
     
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -40,10 +43,14 @@ jobs:
     - name: Build
       run: |-
         cd db
-        docker build --tag "$IMAGE_WITH_TAG" .
+        docker build --tag "$DB_IMAGE_WITH_TAG" .
+        cd ../backend
+        docker build --tag "$BACK_IMAGE_WITH_TAG" .
 
     - name: Publish
-      run: docker push "$IMAGE_WITH_TAG"
+      run: |-
+        docker push "$DB_IMAGE_WITH_TAG"
+        docker push "$BACK_IMAGE_WITH_TAG"        
 
     - name: Set up Kustomize
       run: |-
@@ -59,6 +66,7 @@ jobs:
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
         kubectl create namespace project --dry-run=client -o yaml | kubectl apply -f -
-        ./kustomize edit set image PROJECT/IMAGE=$IMAGE_WITH_TAG
+        ./kustomize edit set image DBPROJECT/IMAGE=$DB_IMAGE_WITH_TAG
+        ./kustomize edit set image BACKPROJECT/IMAGE=$BACK_IMAGE_WITH_TAG      
         kubectl apply -k .
         kubectl rollout status statefulset/postgres-ss -n project

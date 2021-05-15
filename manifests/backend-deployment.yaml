@@ -14,8 +14,8 @@ spec:
         app: backend
     spec:
       containers:
-        - name: backend
-          image: katilp/ex2-08-back:v1.0.0
+        - name: dwk-backend
+          image: BACKPROJECT/IMAGE
           env:
             - name: POSTGRES_PASSWORD # ENV name passed to container
               valueFrom:
