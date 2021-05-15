@@ -36,3 +36,4 @@ jobs:
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
         kubectl create namespace project --dry-run=client -o yaml | kubectl apply -f -
         kubectl apply -k .
+        #kubectl rollout status deployment/backend-dep -n project
