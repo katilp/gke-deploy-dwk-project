@@ -30,8 +30,8 @@ spec:
         app: postgres
     spec:
       containers:
-        - name: my-db
-          image: katilp/ex2-08-db:v1.0.0
+        - name: dwk-db
+          image: PROJECT/IMAGE
           envFrom:
           - secretRef:
               name: db-password
