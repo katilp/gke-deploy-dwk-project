@@ -9,8 +9,11 @@ resources:
 - manifests/frontend-deployment.yaml
 - manifests/frontend-service.yaml
 secretGenerator:
-- name: db-password
+- files:
+  - POSTGRES_PASSWORD
+  name: db-password
   namespace: project
-  files:
-    - "POSTGRES_PASSWORD"
-  type: "Opaque"
+  type: Opaque
+images:
+- name: PROJECT/IMAGE
+  newName: fake/imagename

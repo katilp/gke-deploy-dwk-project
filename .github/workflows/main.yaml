@@ -6,18 +6,21 @@ on:
 env:
   GKE_CLUSTER: dwk-cluster
   GKE_ZONE: europe-west6-a
-  IMAGE: dwk-environments
+  IMAGE: dwk-db
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true  
    
 jobs:
-  setup-deploy:
-    name: Setup and Deploy
+  setup-build-deploy:
+    name: Setup, Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-        
+
+    - name: Create db image name and tag
+      run: echo "::set-env name=IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
+    
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
@@ -30,10 +33,25 @@ jobs:
         gcloud auth list
         gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
         
+    - name: Build
+      run: |-
+        cd db
+        docker build --tag "$IMAGE_WITH_TAG" .
+
+    - name: Publish
+      run: docker push "$IMAGE_WITH_TAG"
+
+    - name: Set up Kustomize
+      run: |-
+        curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+
     - name: Deploy
       run: |-
+        cd ..
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
         kubectl create namespace project --dry-run=client -o yaml | kubectl apply -f -
+        ./kustomize edit set image PROJECT/IMAGE=$IMAGE_WITH_TAG
         kubectl apply -k .
-        #kubectl rollout status deployment/backend-dep -n project
+        kubectl rollout status deployment/$IMAGE -n project
