@@ -1,0 +1,36 @@
+name: Project release
+
+on:
+  push:
+
+env:
+  GKE_CLUSTER: dwk-cluster
+  GKE_ZONE: europe-west6-a
+  IMAGE: dwk-environments
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true  
+   
+jobs:
+  setup-deploy:
+    name: Setup and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+        
+    - name: Setup gcloud
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+    
+    - run: |-
+        echo $GKE_CLUSTER
+        echo $GKE_ZONE
+        gcloud auth list
+        gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
+        
+    - name: Deploy
+      run: |-
+        kubectl apply -k .
+        kubectl rollout status deployments   
