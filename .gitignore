@@ -1,5 +1,6 @@
 kustomize
 POSTGRES_PASSWORD
 GRAPHQL_URL
+NEW_NS
 frontend/.vscode
 backend/.vscode

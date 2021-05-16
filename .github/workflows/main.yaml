@@ -22,10 +22,13 @@ jobs:
 
     - name: Create image names and tags
       run: |-
-        echo "::set-env name=DB_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$DB_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
-        echo "::set-env name=BACK_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$BACK_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
-        echo "::set-env name=FRONT_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$FRONT_IMAGE:${GITHUB_REF#refs/heads/}-$GITHUB_SHA"   
-    
+        my_ref=${GITGUB_REF:10} # removes first 10 characters from ref/heads/<branch> or ref/tags/<tagname>
+        new_ref=${my_ref#/} # removes the remaining / in case of branch name
+        new_ref=${new_ref//./-} # replaces eventual dots with hyphens (e.g. in a tag) so that it is good for namespace
+        echo "::set-env name=DB_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$DB_IMAGE:$new_ref-$GITHUB_SHA"   
+        echo "::set-env name=BACK_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$BACK_IMAGE:$new_ref-$GITHUB_SHA"   
+        echo "::set-env name=FRONT_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$FRONT_IMAGE:$new_ref-$GITHUB_SHA"      
+            
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
@@ -66,11 +69,11 @@ jobs:
 
     - name: Deploy
       run: |-
-        pwd
-        ls -l
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
-        export NEW_NS=${GITHUB_REF#refs/heads/}
+        my_ref=${GITGUB_REF:10} 
+        new_ref=${my_ref#/} 
+        NEW_NS=${new_ref//./-}
         echo -n "http://backend-svc.$NEW_NS.svc/graphql" > GRAPHQL_URL
         echo -n $NEW_NS > NEW_NS
         kubectl create namespace ${GITHUB_REF#refs/heads/} || true
