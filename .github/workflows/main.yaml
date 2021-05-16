@@ -76,7 +76,7 @@ jobs:
         NEW_NS=${new_ref//./-}
         echo -n "http://backend-svc.$NEW_NS.svc/graphql" > GRAPHQL_URL
         echo -n $NEW_NS > NEW_NS
-        kubectl create namespace ${GITHUB_REF#refs/heads/} || true
+        kubectl create namespace $NEW_NS || true
         ./kustomize edit set namespace $NEW_NS
         ./kustomize edit set image DBPROJECT/IMAGE=$DB_IMAGE_WITH_TAG
         ./kustomize edit set image BACKPROJECT/IMAGE=$BACK_IMAGE_WITH_TAG 
