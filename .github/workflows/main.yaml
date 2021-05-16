@@ -22,8 +22,9 @@ jobs:
 
     - name: Create image names and tags
       run: |-
-        my_ref=${GITGUB_REF:10}
-        new_ref=${my_ref#/}
+        my_ref=${GITGUB_REF:10} # removes first 10 characters from ref/heads/<branch> or ref/tags/<tagname>
+        new_ref=${my_ref#/} # removes the remaining / in case of branch name
+        new_ref=${new_ref//./-} # replaces eventual dots with hyphens (e.g. in a tag) so that it is good for namespace
         echo "::set-env name=DB_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$DB_IMAGE:$new_ref-$GITHUB_SHA"   
         echo "::set-env name=BACK_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$BACK_IMAGE:$new_ref-$GITHUB_SHA"   
         echo "::set-env name=FRONT_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$FRONT_IMAGE:$new_ref-$GITHUB_SHA"   
