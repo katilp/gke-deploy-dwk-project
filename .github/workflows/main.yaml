@@ -25,8 +25,8 @@ jobs:
         my_ref=${GITGUB_REF:10}
         new_ref=${my_ref#/}
         echo "::set-env name=DB_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$DB_IMAGE:$new_ref-$GITHUB_SHA"   
-        echo "::set-env name=BACK_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$BACK_IMAGE:${GITHUB_REF#new_ref-$GITHUB_SHA"   
-        echo "::set-env name=FRONT_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$FRONT_IMAGE:${GITHUB_REF#new_ref-$GITHUB_SHA"   
+        echo "::set-env name=BACK_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$BACK_IMAGE:$new_ref-$GITHUB_SHA"   
+        echo "::set-env name=FRONT_IMAGE_WITH_TAG::gcr.io/${{ secrets.GKE_PROJECT }}/$FRONT_IMAGE:$new_ref-$GITHUB_SHA"   
     
     - name: Setup gcloud
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
