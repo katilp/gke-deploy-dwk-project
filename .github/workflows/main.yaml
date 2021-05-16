@@ -70,6 +70,7 @@ jobs:
         ls -l
         export PASSWORD_FROMGITHUB=${{ secrets.DB_PWD }}
         echo -n $PASSWORD_FROMGITHUB > POSTGRES_PASSWORD
+        echo -n "http://backend-svc.${GITHUB_REF#refs/heads/}.svc/graphql" > GRAPHQL_URL
         kubectl create namespace ${GITHUB_REF#refs/heads/} || true
         ./kustomize edit set namespace ${GITHUB_REF#refs/heads/}
         ./kustomize edit set image DBPROJECT/IMAGE=$DB_IMAGE_WITH_TAG

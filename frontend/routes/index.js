@@ -23,9 +23,9 @@ router.post('/', function (req, res) {
     }  
   }`;
 
-  //const endpoint = process.env.GRAPHQL_URL;
+  const endpoint = process.env.GRAPHQL_URL;
   //const endpoint = 'http://localhost:3001/graphql';
-  const endpoint = 'http://backend-svc.project.svc/graphql';
+  //const endpoint = 'http://backend-svc.project.svc/graphql';
   fetch(endpoint, {
     method: 'POST',
     headers: {

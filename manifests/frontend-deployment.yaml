@@ -19,7 +19,13 @@ spec:
             claimName: file-claim
       containers:
         - name: dwk-frontend
-          image: FRONTPROJECT/IMAGE      
+          image: FRONTPROJECT/IMAGE
+          env:
+            - name: GRAPHQL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: front-config # this is ConfigMap Name
+                  key: GRAPHQL_URL # this is key in ConfigMap      
           volumeMounts:
           - name: shared-files
             mountPath: /usr/src/app/shared
