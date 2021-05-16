@@ -1,0 +1,38 @@
+name: Project delete
+
+on:
+  delete
+
+env:
+  GKE_CLUSTER: dwk-cluster
+  GKE_ZONE: europe-west6-a
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true  
+
+jobs:
+  delete-deployment:
+    name: Delete deployment for deleted branch
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Check 
+      run: |
+        echo "GITHUB_SHA is ${{ github.sha }}" # should be the commit that triggers the workflow
+        echo "GITHUB_REF is ${{ github.ref }}" # should be refs/heads/main
+        echo "${{ github.event.ref }} - ${{ github.event.ref_type }}" #should be the branch to be deleted
+
+    - name: Setup gcloud
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+
+    - name: Get credentials
+      run: |-
+        gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE
+
+    - name: Delete
+      run: |-
+        kubectl delete namespace ${{ github.event.ref }}
