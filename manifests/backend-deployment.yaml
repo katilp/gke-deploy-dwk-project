@@ -32,8 +32,13 @@ spec:
                 configMapKeyRef:
                   name: back-config
                   key: PGDATABASE
+            - name: NEW_NS
+              valueFrom:
+                configMapKeyRef:
+                  name: back-ns-config
+                  key: NEW_NS
             - name: DATABASE_URL
-              value: "postgres://$(PGUSER):$(POSTGRES_PASSWORD)@postgres-svc.project.svc:5432/$(PGDATABASE)"
+              value: "postgres://$(PGUSER):$(POSTGRES_PASSWORD)@postgres-svc.$(NEW_NS).svc:5432/$(PGDATABASE)"
           ports:
             - name: http
               containerPort: 80

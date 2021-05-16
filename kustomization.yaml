@@ -19,3 +19,8 @@ configMapGenerator:
   - GRAPHQL_URL
   name: front-config
   namespace: project 
+configMapGenerator:
+- files:
+  - NEW_NS
+  name: back-ns-config
+  namespace: project
