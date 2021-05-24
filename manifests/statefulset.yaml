@@ -32,6 +32,10 @@ spec:
       containers:
         - name: dwk-db
           image: DBPROJECT/IMAGE
+          resources:
+            limits:
+              cpu: "200m" # limit "m" stands for "thousandth of a core"
+              memory: "200Mi"
           envFrom:
           - secretRef:
               name: db-password

@@ -8,6 +8,9 @@ resources:
 - manifests/backend-service.yaml
 - manifests/frontend-deployment.yaml
 - manifests/frontend-service.yaml
+- manifests/ssset-hpa.yaml
+- manifests/backend-hpa.yaml
+- manifests/frontend-hpa.yaml
 secretGenerator:
 - files:
   - POSTGRES_PASSWORD
