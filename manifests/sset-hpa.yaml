@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: frontend-hpa
+  name: sset-hpa
   namespace: project
 spec:
   scaleTargetRef:
