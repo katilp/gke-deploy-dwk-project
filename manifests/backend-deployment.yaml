@@ -16,6 +16,10 @@ spec:
       containers:
         - name: dwk-backend
           image: BACKPROJECT/IMAGE
+          resources:
+            limits:
+              cpu: "200m" # limit "m" stands for "thousandth of a core"
+              memory: "100Mi"
           env:
             - name: POSTGRES_PASSWORD # ENV name passed to container
               valueFrom:
